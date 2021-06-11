@@ -1,0 +1,124 @@
+Diagonal_Cubic_Computation := function(A,B,C,D)
+  // The field we can guarantee definition over
+    _<T> := PolynomialRing(Rationals());
+    poly := (T^3-A)*(T^3-B)*(T^3-C)*(T^3-D);
+    K := SplittingField(poly);
+    print(K);
+
+  // Define Projective Space and Cubic Polynomial
+  P3<x,y,z,w>:=ProjectiveSpace(K,3);
+  cubic:=A*x^3+B*y^3+C*z^3+D*w^3;
+  X:=Scheme(P3,cubic);
+  if IsSingular(X) then
+    print "That curve is singular, fool";
+    return 0;
+  end if;
+
+  // Generate the space of possible lines
+  AA2<alpha,beta> := AffineSpace(K,2);
+  paramters<s,t> := PolynomialRing(CoordinateRing(AA2),2);
+  line_parametrizations := [[s,t,alpha*s,beta*t],[s,t,beta*t,alpha*s]];
+
+  // Compute the lines of the form [x=alpha y, z=beta w]
+  // Make the substitutions from the definition of the line
+  xy_zw_lines := Evaluate(DefiningEquation(X), [alpha*s,s, beta*t,t]);
+  // Since we want the result to be identically zero, we extract the coefficients
+  // and create the variety (Scheme) of the resulting polynomials in alpha and beta
+  L_xy_zw := Scheme(AA2,Coefficients(xy_zw_lines));
+  xy_zw_line_coeffs := Points(L_xy_zw);
+  lines := [* *];
+  for pt in xy_zw_line_coeffs do
+    Append(~lines, Scheme(P3,[x-pt[1]*y,z-pt[2]*w]));
+  end for;
+
+  // Repeat this process for lines of the form [x=alpha z, y=beta w] and [x=alpha w, y=beta z]
+  xz_yw_lines := Evaluate(DefiningEquation(X), [alpha*s,beta*t,s,t]);
+  L_xz_yw := Scheme(AA2,Coefficients(xz_yw_lines));
+  xz_yw_line_coeffs := Points(L_xz_yw);
+  for pt in xz_yw_line_coeffs do
+    Append(~lines, Scheme(P3,[x-pt[1]*z,y-pt[2]*w]));
+  end for;
+  xw_yz_lines := Evaluate(DefiningEquation(X), [alpha*s,beta*t,t,s]);
+  L_xw_yz := Scheme(AA2,Coefficients(xz_yw_lines));
+  xw_yz_line_coeffs := Points(L_xw_yz);
+  for pt in xw_yz_line_coeffs do
+    Append(~lines, Scheme(P3,[x-pt[1]*w,y-pt[2]*z]));
+  end for;
+
+  // certify that there are 27 lines
+  assert #lines eq 27;
+
+  // certify that the lines are on the surface
+  for l in lines do
+      assert l subset X;
+  end for;
+
+
+
+  return 0;
+end function;
+Diagonal_Cubic_Computation(1,1,1,1)
+
+
+
+
+
+  AutKQ,Aut,Tau:=AutomorphismGroup(K,Rationals());
+  autoperms:=[Tau(sig) : sig in Generators(AutKQ)];
+  P3K<xK,yK,zK,wK>:=ProjectiveSpace(K,3);
+  XK:=BaseChange(X,P3K);
+  //lines2:=[Scheme(P3K,[yK-Alpha[2][i]*xK,wK-Beta[2][i]*xK-Gamma[2][i]*zK]):i in [1..9]];
+  lines1:=[Scheme(P3K,[zK-Alpha[1][i]*xK-Gamma[1][i]*yK,wK-Beta[1][i]*xK-Delta[1][i]*yK]):i in [1..#froots]];
+  lines:=lines1; //cat lines2;
+  if (#lines ne 27) then
+  print "needs more lines";
+  print lines;
+  return 3;
+  end if;
+  for l in lines do
+  if (l subset XK eq false) then
+  print "lines not on surface";
+  return 4;
+  end if;
+  if (Degree(l) ne 1) then
+  print "lines not lines";
+  return 5;
+  end if;
+  end for;
+  AutPolyAction:=function(S,a)
+  k:=BaseRing(Parent(S));
+  m:=Monomials(S);
+  c:=Coefficients(S);
+  return &+[ k!(c[i]@a)*m[i]:i in [1..#c]];
+  end function;
+  AutSchemeAction:=function(Y,a)
+  C:=AmbientSpace(Y);
+  return Scheme(C, [AutPolyAction(B,a):B in DefiningPolynomials(Y)]);
+  end function;
+  Laction:=func<a|[Index(lines,AutSchemeAction(l,a)):l in lines]>;
+  G:=PermutationGroup<27|[Laction(sig):sig in autoperms]>;
+  Int:=Matrix([[Dimension(l1 meet l2)+1 : l1 in lines]:l2 in lines]);
+  for i in [1..27] do
+  Int[i,i]:=-1;
+  end for;
+  if [M*Int*Transpose(M) eq Int where M is PermutationMatrix(Integers(),g): g in Generators(G)] ne [true : g in Generators(G)] then
+  print "There is a problem with the matrix thing";
+  return 7;
+  end if;
+  LambdaMod:=PermutationModule(G,Integers());
+  rhoL:=Representation(LambdaMod);
+  Lambda:=VectorSpace(LambdaMod);
+  Pic, class:=quo<Lambda | Kernel(Int)>;
+  ClassMatrix:=Matrix([class(Lambda.i):i in [1..27]]);
+  ClassSection:=Solution(ClassMatrix,IdentityMatrix(Integers(),7));
+  PicMod:=GModule(G,[ClassSection * M * ClassMatrix : M in ActionGenerators(LambdaMod)]);
+  CM:=CohomologyModule(G,PicMod);
+  H1:=CohomologyGroup(CM,1);
+  print "Scheme=",X;
+  print "#G=",#G;
+  print "Pic", Pic;
+  print "Size of H1=",#H1;
+  print "Some information on H1";
+  return H1;
+end function;
+Brauer27(1,1,1,1);
