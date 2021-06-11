@@ -52,12 +52,22 @@ Diagonal_Cubic_Computation := function(A,B,C,D)
   for l in lines do
       assert l subset X;
   end for;
-
-
+  print 2*ArithmeticGenus(lines[1]);
+  // create the intersection matrix
+  A := ScalarMatrix(27,-1);
+  for i in [1..26] do
+      for j in [i+1 ..27] do
+          A[i,j] := Degree(lines[i] meet lines[j]);
+          A[j,i] := A[i,j];
+      end for;
+  end for;
+  // The row space of the matrix
+  print RowSpace(A);
 
   return 0;
 end function;
 Diagonal_Cubic_Computation(1,1,1,1)
+
 
 
 
