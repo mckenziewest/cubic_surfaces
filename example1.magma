@@ -54,76 +54,80 @@ Diagonal_Cubic_Computation := function(A,B,C,D)
   end for;
   print 2*ArithmeticGenus(lines[1]);
   // create the intersection matrix
-  A := ScalarMatrix(27,-1);
+  Intersection_Matrix := ScalarMatrix(27,-1);
   for i in [1..26] do
       for j in [i+1 ..27] do
-          A[i,j] := Degree(lines[i] meet lines[j]);
-          A[j,i] := A[i,j];
+          Intersection_Matrix[i,j] := Degree(lines[i] meet lines[j]);
+          Intersection_Matrix[j,i] := Intersection_Matrix[i,j];
       end for;
   end for;
   // The row space of the matrix
-  print RowSpace(A);
+  print RowSpace(Intersection_Matrix);
 
-  return 0;
-end function;
-Diagonal_Cubic_Computation(1,1,1,1)
+  // The Galois group, aka the automorphisms of K fixing Q
+  GalK, _, Tau := AutomorphismGroup(K,Rationals());
+  // In the line above, notice that three things are given by the AutomorphismGroup funciton
+  // GalK - the Galois group, given by permutations
+  // _ - a list we don't use so we don't even give it a name
+  // Tau - a map from the group of permutations to the group of actual automorphisms on the field
+  // Thus in the next line here, we create a list of the automorphisms
+  autoperms := [* Tau(sig) : sig in Generators(GalK) *];
 
-
-
-
-
-
-  AutKQ,Aut,Tau:=AutomorphismGroup(K,Rationals());
-  autoperms:=[Tau(sig) : sig in Generators(AutKQ)];
-  P3K<xK,yK,zK,wK>:=ProjectiveSpace(K,3);
-  XK:=BaseChange(X,P3K);
-  //lines2:=[Scheme(P3K,[yK-Alpha[2][i]*xK,wK-Beta[2][i]*xK-Gamma[2][i]*zK]):i in [1..9]];
-  lines1:=[Scheme(P3K,[zK-Alpha[1][i]*xK-Gamma[1][i]*yK,wK-Beta[1][i]*xK-Delta[1][i]*yK]):i in [1..#froots]];
-  lines:=lines1; //cat lines2;
-  if (#lines ne 27) then
-  print "needs more lines";
-  print lines;
-  return 3;
-  end if;
-  for l in lines do
-  if (l subset XK eq false) then
-  print "lines not on surface";
-  return 4;
-  end if;
-  if (Degree(l) ne 1) then
-  print "lines not lines";
-  return 5;
-  end if;
-  end for;
-  AutPolyAction:=function(S,a)
-  k:=BaseRing(Parent(S));
-  m:=Monomials(S);
-  c:=Coefficients(S);
-  return &+[ k!(c[i]@a)*m[i]:i in [1..#c]];
+  // The following function inputs a polynomial and an element, sigma of autoperms
+  // it then applies the galois element to the coefficients of the polynomial, returning the new one
+  AutPolyAction := function(poly,sigma)
+    // k is the field such that poly in k[x]
+    k := BaseRing(Parent(poly));
+    // m is the list of monomials, for example if poly = ax+by-cz, then m=[x,y,z]
+    m := Monomials(poly);
+    // c is the list of coefficients, for example if poly = ax+by-cz, then c=[a,b,-c]
+    c := Coefficients(poly);
+    // Here &+ means "add all the elements in the list together"
+    // and @ means "plug the value before this into the map after it"
+    // and k! means "view the following value as an element of k"
+    return &+[ k!(c[i]@sigma)*m[i]:i in [1..#c]];
   end function;
-  AutSchemeAction:=function(Y,a)
-  C:=AmbientSpace(Y);
-  return Scheme(C, [AutPolyAction(B,a):B in DefiningPolynomials(Y)]);
+
+  // This function takes in a variety (Scheme) and an element of autoperms
+  // then determines the variety after applying the element to the variety
+  AutSchemeAction := function(Y,sigma)
+    C := AmbientSpace(Y);
+    // The value of [AutPolyAction(poly,sigma): poly in DefiningPolynomials(Y)]
+    // is the list of polynomials after applying the automorphism to the polynomials that
+    // define the original variety.
+    return Scheme(C, [AutPolyAction(poly,sigma): poly in DefiningPolynomials(Y)]);
   end function;
-  Laction:=func<a|[Index(lines,AutSchemeAction(l,a)):l in lines]>;
-  G:=PermutationGroup<27|[Laction(sig):sig in autoperms]>;
-  Int:=Matrix([[Dimension(l1 meet l2)+1 : l1 in lines]:l2 in lines]);
-  for i in [1..27] do
-  Int[i,i]:=-1;
+
+  // This function takes in an element of the automorphism group and determines
+  // how it permutes the 27 lines and saves it as a list (one-line notation)
+  Laction := function(lines,sigma)
+    return [Index(lines,AutSchemeAction(l,sigma)):l in lines];
+  end function;
+
+  // Save the group of permutations of lines given by the action of the Galois
+  // group to the group G.
+  G := PermutationGroup<27|[Laction(lines,sig):sig in autoperms]>;
+
+  for g in Generators(G) do
+    M := PermutationMatrix(Integers(),g);
+    assert M*Intersection_Matrix*Transpose(M) eq Intersection_Matrix;
   end for;
-  if [M*Int*Transpose(M) eq Int where M is PermutationMatrix(Integers(),g): g in Generators(G)] ne [true : g in Generators(G)] then
-  print "There is a problem with the matrix thing";
-  return 7;
-  end if;
-  LambdaMod:=PermutationModule(G,Integers());
-  rhoL:=Representation(LambdaMod);
-  Lambda:=VectorSpace(LambdaMod);
-  Pic, class:=quo<Lambda | Kernel(Int)>;
-  ClassMatrix:=Matrix([class(Lambda.i):i in [1..27]]);
-  ClassSection:=Solution(ClassMatrix,IdentityMatrix(Integers(),7));
-  PicMod:=GModule(G,[ClassSection * M * ClassMatrix : M in ActionGenerators(LambdaMod)]);
-  CM:=CohomologyModule(G,PicMod);
-  H1:=CohomologyGroup(CM,1);
+
+  // We now consider the permutation matrices as acting on the integer 1,...,27
+  // this needs to be done in order to compute the group H1(GalK,Pic)
+  LambdaMod := PermutationModule(G,Integers());
+  rhoL := Representation(LambdaMod);
+  Lambda := VectorSpace(LambdaMod);
+  // The row space of the intersection matrix (the Picard Group) is isomorphic
+  // to the quotient of the full-dimension vector space by the kernel of the matrix.
+  Pic, class := quo<Lambda | Kernel(Intersection_Matrix)>;
+  // Here's a little bit of linear algebra setup, we'll accept it as necessary
+  ClassMatrix := Matrix([class(Lambda.i):i in [1..27]]);
+  ClassSection := Solution(ClassMatrix,IdentityMatrix(Integers(),7));
+  PicMod := GModule(G,[ClassSection * M * ClassMatrix : M in ActionGenerators(LambdaMod)]);
+  CM := CohomologyModule(G,PicMod);
+  // And finally, H1(GalK,Pic), which is isomorphic to Br S/Br Q
+  H1 := CohomologyGroup(CM,1);
   print "Scheme=",X;
   print "#G=",#G;
   print "Pic", Pic;
@@ -131,4 +135,4 @@ Diagonal_Cubic_Computation(1,1,1,1)
   print "Some information on H1";
   return H1;
 end function;
-Brauer27(1,1,1,1);
+Diagonal_Cubic_Computation(1,1,1,1)
