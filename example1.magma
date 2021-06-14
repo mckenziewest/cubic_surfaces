@@ -135,4 +135,4 @@ Diagonal_Cubic_Computation := function(A,B,C,D)
   print "Some information on H1";
   return H1;
 end function;
-Diagonal_Cubic_Computation(1,1,1,1)
+Diagonal_Cubic_Computation(1,1,1,1);
