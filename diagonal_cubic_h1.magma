@@ -1,9 +1,13 @@
-load "diagonal_cubic_h1.magma";
-
+Diagonal_Cubic_Computation := function(A,B,C,D)
+  // The field we can guarantee definition over
+    _<T> := PolynomialRing(Rationals());
+    poly := (T^3-A)*(T^3-B)*(T^3-C)*(T^3-D);
+    K := SplittingField(poly);
+    print(K);
   // Define Projective Space and Cubic Polynomial
-  P3<x,y,z,w>:=ProjectiveSpace(K,3);
-  cubic:=A*x^3+B*y^3+C*z^3+D*w^3;
-  X:=Scheme(P3,cubic);
+  P3<x,y,z,w> := ProjectiveSpace(K,3);
+  cubic := A*x^3+B*y^3+C*z^3+D*w^3;
+  X := Scheme(P3,cubic);
   if IsSingular(X) then
     print "That curve is singular, fool";
     return 0;
@@ -12,7 +16,6 @@ load "diagonal_cubic_h1.magma";
   // Generate the space of possible lines
   AA2<alpha,beta> := AffineSpace(K,2);
   paramters<s,t> := PolynomialRing(CoordinateRing(AA2),2);
-  line_parametrizations := [[s,t,alpha*s,beta*t],[s,t,beta*t,alpha*s]];
 
   // Compute the lines of the form [x=alpha y, z=beta w]
   // Make the substitutions from the definition of the line
@@ -34,7 +37,7 @@ load "diagonal_cubic_h1.magma";
     Append(~lines, Scheme(P3,[x-pt[1]*z,y-pt[2]*w]));
   end for;
   xw_yz_lines := Evaluate(DefiningEquation(X), [alpha*s,beta*t,t,s]);
-  L_xw_yz := Scheme(AA2,Coefficients(xw_yz_lines));
+  L_xw_yz := Scheme(AA2,Coefficients(xz_yw_lines));
   xw_yz_line_coeffs := Points(L_xw_yz);
   for pt in xw_yz_line_coeffs do
     Append(~lines, Scheme(P3,[x-pt[1]*w,y-pt[2]*z]));
@@ -44,10 +47,10 @@ load "diagonal_cubic_h1.magma";
   assert #lines eq 27;
 
   // certify that the lines are on the surface
-  for l in lines do
-      assert l subset X;
-  end for;
-  print 2*ArithmeticGenus(lines[1]);
+  //for l in lines do
+  //    assert l subset X;
+  //end for;
+  //print 2*ArithmeticGenus(lines[1]);
   // create the intersection matrix
   Intersection_Matrix := ScalarMatrix(27,-1);
   for i in [1..26] do
@@ -61,6 +64,7 @@ load "diagonal_cubic_h1.magma";
 
   // The Galois group, aka the automorphisms of K fixing Q
   GalK, _, Tau := AutomorphismGroup(K,Rationals());
+  print(GalK);
   // In the line above, notice that three things are given by the AutomorphismGroup funciton
   // GalK - the Galois group, given by permutations
   // _ - a list we don't use so we don't even give it a name
@@ -111,7 +115,7 @@ load "diagonal_cubic_h1.magma";
   // We now consider the permutation matrices as acting on the integer 1,...,27
   // this needs to be done in order to compute the group H1(GalK,Pic)
   LambdaMod := PermutationModule(G,Integers());
-  rhoL := Representation(LambdaMod);
+  print(LambdaMod);
   Lambda := VectorSpace(LambdaMod);
   // The row space of the intersection matrix (the Picard Group) is isomorphic
   // to the quotient of the full-dimension vector space by the kernel of the matrix.
@@ -130,4 +134,3 @@ load "diagonal_cubic_h1.magma";
   print "Some information on H1";
   return H1;
 end function;
-Diagonal_Cubic_Computation(1,1,1,1)
