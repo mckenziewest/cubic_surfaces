@@ -39,7 +39,7 @@ Diagonal_Cubic_Computation := function(A,B,C,D)
     Append(~lines, Scheme(P3,[x-pt[1]*z,y-pt[2]*w]));
   end for;
   xw_yz_lines := Evaluate(DefiningEquation(X), [alpha*s,beta*t,t,s]);
-  L_xw_yz := Scheme(AA2,Coefficients(xz_yw_lines));
+  L_xw_yz := Scheme(AA2,Coefficients(xw_yz_lines));
   xw_yz_line_coeffs := Points(L_xw_yz);
   for pt in xw_yz_line_coeffs do
     Append(~lines, Scheme(P3,[x-pt[1]*w,y-pt[2]*z]));
