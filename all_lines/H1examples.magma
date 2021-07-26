@@ -1,0 +1,24 @@
+load "dP2H1.magma";
+
+list := [[a,b,c] : a,b in [-1,2,3], c in [2..15] | a le b and b le c and IsSquarefree(c) ];
+
+print "There are " cat Sprint(#list) cat " test cases.";
+
+for coes in list do
+	q := coes[1]*x^4 + coes[2]*y^4 + coes[3]*z^4;
+	lines, L, H1, GalAction := findH1WithoutLines(q);
+	if Category(H1) eq ModTupRng then
+		if #H1 ne 0 then
+			out := Sprintf("Z/%oZ",Moduli(H1)[1]);
+			i := 1;
+			while i lt Rank(H1) do
+				i +:= 1;
+				out cat:= Sprintf(" x Z/%oZ",Moduli(H1)[i]);
+			end while;
+		else
+			out := "0";
+		end if;
+		print "X: w^2 - (" cat Sprint(q) cat "), H1(Pic) = " cat out;
+	end if;
+	delete lines, L, H1, GalAction, q;
+end for;

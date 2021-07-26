@@ -1,0 +1,35 @@
+// The field we can guarantee definition over
+  _<T> := PolynomialRing(Rationals());
+// Define Projective Space and Cubic Polynomial
+P3<x,y,z,w> := ProjectiveSpace(Rationals(),3);
+cubic := x^2*(x+w)+y^2*(y+w)+z^2*(z+w)-1*w^3;
+X := Scheme(P3,cubic);
+if IsSingular(X) then
+  print "That curve is singular, fool";
+end if;
+
+// Generate the space of possible lines
+AA2<alpha,beta,gamma,delta> := AffineSpace(Rationals(),4);
+paramters<s,t> := PolynomialRing(CoordinateRing(AA2),2);
+
+// Compute the lines of the form [x=alpha y, z=beta w]
+// Make the substitutions from the definition of the line
+some_lines := Evaluate(DefiningEquation(X), [alpha*s+beta*t,gamma*s+delta*t,s,t]);
+// Since we want the result to be identically zero, we extract the coefficients
+// and create the variety (Scheme) of the resulting polynomials in alpha and beta
+Line_Scheme := Scheme(AA2,Coefficients(some_lines));
+_, fld := PointsOverSplittingField(Line_Scheme);
+poly_set := {@ @};
+for i in [1..Rank(fld)] do
+  Include(~poly_set,MinimalPolynomial(fld.i));
+end for;
+L<fld_gen> := SplittingField(&*poly_set);
+line_coeffs := Points(BaseChange(Line_Scheme,L));
+print #line_coeffs;
+print L;
+print Line_Scheme;
+//lines := [* *];
+//for pt in line_coeffs do
+//  Append(~lines, Scheme(P3,[x-pt[1]*z-pt[2]*w,y-pt[3]*z-pt[4]*w]));
+//end for;
+//print lines;

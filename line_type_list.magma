@@ -1,0 +1,24 @@
+get_num_lines := function(cubic,type_num)
+  P3 := ProjectiveSpace(Parent(cubic));
+  k := CoefficientRing(Parent(cubic));
+	if IsSingular(Scheme(P3,cubic)) then
+		return false;
+	end if;
+	base<a,b,c,d> := PolynomialRing(k, 4);
+	paramSpace<s,t> := PolynomialRing(base,2);
+  params := [[a*s+b*t,c*s+d*t,s,t],[a*s+b*t,s,c*t,t],[a*s+b*t,s,t,0],[s,a*t,b*t,t],[s,a*t,t,0],[s,t,0,0]];
+  added := [[],[d],[c,d],[c,d],[b,c,d],[a,b,c,d]];
+  coes := Coefficients(Evaluate(cubic,params[type_num]));
+  A4 := AffineSpace(base);
+  S := Scheme(A4,coes cat added[type_num]);
+  return Degree(S);
+end function;
+
+get_line_types := function(cubic)
+  return [get_num_lines(cubic,i) : i in [1..6]];
+end function;
+
+
+P3<x,y,z,w> := ProjectiveSpace(Rationals(),3);
+cubic := x^2*z+y^2*w+z^3+w^3;
+get_line_types(cubic);

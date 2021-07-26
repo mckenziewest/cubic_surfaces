@@ -1,0 +1,140 @@
+/* Define a function which returns the coefficient of a specific monomial, m, of a polynomial, poly. */
+getCo := function(poly,m)
+	bool := exists(i){i : i in [1..#Monomials(poly)] | Monomials(poly)[i] eq m};
+	if bool then
+		return Coefficients(poly)[i];
+	else
+		return 0;
+	end if;
+end function;
+
+
+/* Define a function which returns the equations on the coefficients that are necessary in order for X meet linear eqn to be a square */
+/* For example, in finding lines of the form x = ay + bz, evaluate F at [ay+bz, y, z].  In order to have a bitangent, the evaluation must be a square.  This occurs when F(ay+bz,y,z) - (Ay^2 + Byz + Cz^2)^2 = 0.  We return a list [f1, f2, f3, f4, f5] given by the coefficients of y^4, y^3z, y^2z^2, yz^3, and z^4 respectively. */
+getEqns := function(poly)
+	P<s,t> := Parent(poly);
+	R := CoefficientRing(P);
+	rk := Rank(R);
+	A := R.(rk-2);
+	B := R.(rk-1);
+	C := R.rk;
+	eqnlist := [A^2 - getCo(poly, s^4),2*A*B - getCo(poly, s^3*t),2*A*C + B^2 - getCo(poly, s^2*t^2),\
+		2*B*C - getCo(poly, s*t^3),C^2 - getCo(poly, t^4)];
+	return eqnlist;
+end function;
+
+getSpltFld := function(S,k)
+	_, sfld := PointsOverSplittingField(S);
+		if Degree(sfld) ge 2 then
+		L := SplittingField(AbsolutePolynomial(sfld));
+		OL := Integers(L);
+		int := OL.2;
+		L := SplittingField(MinimalPolynomial(int));
+	else
+		L := k;
+	end if;
+	return L;
+end function;
+	
+
+/* Define a function which inputs a quartic and its coefficients and returns a list of bitangents
+of the form x = ay +bz. */
+inTermsOfx := function(q,k)
+	base<a,b,A,B,C> := PolynomialRing(k, 5);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [a*s+b*t,s,t]);
+	A5<a,b,A,B,C> := AffineSpace(k,5);
+	S := Scheme(A5, getEqns(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);	
+	P3<x,y,z,w> := ProjectiveSpace(L,[1,1,1,2]);
+	xLines := {@ Scheme(P3, [x - pt[1]*y - pt[2]*z, w - pt[3]*y^2 - pt[4]*y*z - pt[5]*z^2]) : pt in pts @};
+ 	return xLines, L;
+end function;
+
+inTermsOfy := function(q,k)
+	k := Rationals();
+	base<a,A,B,C> := PolynomialRing(k, 4);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [s, a*t, t]);
+	A4<a,A,B,C> := AffineSpace(k,4);
+	S := Scheme(A4, getEqns(qnew));
+	L := getSpltFld(S,k);
+	pts := Points(S,L);	
+	P3<x,y,z,w> := ProjectiveSpace(L,[1,1,1,2]);
+	yLines := {@ Scheme(P3, [y - pt[1]*z, w - pt[2]*x^2 - pt[3]*x*z - pt[4]*z^2]) : pt in pts @};
+ 	return yLines, L;
+end function;
+
+inTermsOfz := function(q,k)
+	k := Rationals();
+	base<A,B,C> := PolynomialRing(k, 3);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [s, t, 0]);
+	A3<A,B,C> := AffineSpace(k,2);
+	S := Scheme(A3, getEqns(qnew));
+	L := getSpltFld(S,k);
+	pts := Points(S,L);	
+	P3<x,y,z,w> := ProjectiveSpace(L,[1,1,1,2]);
+	zLines := {@ Scheme(P3, [z, w - pt[1]*x^2 - pt[2]*x*y - pt[3]*y^2]) : pt in pts @};
+ 	return zLines, L;
+end function;
+
+/* Define a function which inputs a Scheme defined by a quartic curve
+and return all of the bitangents of that curve. */
+
+findLines := function(C)
+	/* Get necessary information. */
+	k := BaseField(C);
+	R<x,y,z> := PolynomialRing(k,3);
+	q := R!DefiningEquation(C);
+
+	/* Now we search for bitangents of the form x = ay + bz. */
+	xLines, xL := inTermsOfx(q,k);
+
+	/* Repeat for y = az, provided they have not all been found. */
+	if #xLines ne 56 then
+		yLines, yL := inTermsOfy(q,k);
+	else
+		yLines := [];
+		yL := xL;
+	end if;
+	
+	/* Combine the lists of the two forms above and the fields of definition. */
+	lines := xLines join yLines;
+	L := Compositum(xL,yL);
+
+	/* Lastly check whether or not we have all 28.  If not, throw in z = 0 */
+	if #lines ne 56 then
+		zLines, zL := inTermsOfz(q,k);
+		lines join:= zLines;
+		L := Compositum(zL, L);
+	end if;
+
+	return SetToSequence(lines), L; 
+end function;
+
+
+/* These are borrowed from Samir Siksek, and can be found in their original form at
+ http://homepages.warwick.ac.uk/~maseap/arith/notes/quartic.magma more information on the functions is available in this file.
+Together the following 3 functions are able to determine the 
+action on a list of lines by an automorphism of a field over 
+which they are defined. */
+AutPolyAction := function(poly, sigma)
+  	L := BaseRing(Parent(poly));
+	L2 := Domain(sigma); //For some reason magma gets angry if this is not defined...I do not know enough about computers to know why.
+  	m := Monomials(poly);
+  	c := Coefficients(poly);
+  	return &+[ L!(c[i] @ sigma) * m[i] : i in [1..#c] ];
+end function;
+AutSchemeAction := function(l, sigma)
+  	Amb := AmbientSpace(l);
+  	return Scheme(Amb, [ AutPolyAction(poly, sigma) : poly in
+		DefiningPolynomials(l) ] );
+end function;
+LAction := function(sigma, lines)
+	return [ Index(lines, AutSchemeAction(l, sigma)): l in lines ];
+end function;
+
+

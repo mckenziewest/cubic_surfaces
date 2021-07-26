@@ -1,0 +1,18 @@
+Magma V2.24-9     Fri Jul 23 2021 11:50:27 on MATH2681558 [Seed = 767016494]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "find_the_lines.magma"
+[ 16, 6, 2, 2, 0, 1 ]
+
+Total time: 0.100 seconds, Total memory usage: 32.09MB
