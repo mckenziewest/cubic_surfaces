@@ -14,10 +14,3 @@ for k in CartesianPower([-1..2],10) do
   end if;
 end for;
 print S;
-
-
-
-k2=k3=k4=k5=k8=k11=k12=0
-
-cubic := w^3+x^2*z+x^2*w+y^2*z+y^2*w+z^2*w+x*y*z;
-get_line_types(cubic);
