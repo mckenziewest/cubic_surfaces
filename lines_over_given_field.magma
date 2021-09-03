@@ -1,0 +1,49 @@
+/*
+The goal of this code is to be able to find all of the lines on a cubic surface that are defined over a specified field.
+*/
+
+make_line_from_point := function(k,point, line_type)
+    poly_ring<x,y,z,w> := PolynomialRing(k,4);
+    RR<a,b,c,d> := PolynomialRing(poly_ring,4);
+    eqns := [
+        [x-a*z-b*w,y-c*z-d*w],
+        [x-a*y-b*w,z-c*w],
+        [x-a*y-b*z,w],
+        [y-a*w,z-b*w],
+        [y-a*z,w],
+        [z,w]
+    ];
+    l1 := Evaluate(eqns[line_type][1],Coordinates(point));
+    l2 := Evaluate(eqns[line_type][2],Coordinates(point));
+    P3 := ProjectiveSpace(poly_ring);
+    return Scheme(P3,[l1,l2]);
+end function;
+
+
+get_lines_over_field := function(cubic,k)
+  P3 := ProjectiveSpace(k,3);
+  if IsSingular(Scheme(P3,cubic)) or Degree(cubic) ne 3 then
+	return false;
+  end if;
+  base<a,b,c,d> := PolynomialRing(k, 4);
+  paramSpace<s,t> := PolynomialRing(base,2);
+  params := [[a*s+b*t,c*s+d*t,s,t],[a*s+b*t,s,c*t,t],[a*s+b*t,s,t,0],[s,a*t,b*t,t],[s,a*t,t,0],[s,t,0,0]];
+  added := [[],[d],[c,d],[c,d],[b,c,d],[a,b,c,d]];
+  lines_over_field := [];
+  for type_num in [1..6] do
+  	coes := Coefficients(Evaluate(cubic,params[type_num]));
+  	A4 := AffineSpace(base);
+ 	 S := Scheme(A4,coes cat added[type_num]);
+        pts := Points(S);
+    for P in pts do
+        Append(~lines_over_field,make_line_from_point(k,P,type_num));
+    end for;
+  end for;
+  return lines_over_field;
+end function;
+
+
+P<x,y,z,w> := PolynomialRing(Rationals(),4);
+lines := get_lines_over_field(x^3+y^3+z^3+w^3,Rationals());
+print #lines;
+print lines;
