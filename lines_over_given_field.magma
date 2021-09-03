@@ -1,10 +1,10 @@
 /*
 The goal of this code is to be able to find all of the lines on a cubic surface that are defined over a specified field.
-For example
-P<x,y,z,w> := PolynomialRing(Rationals(),4);
-lines := get_lines_over_field(x^3+y^3+z^3+w^3,Rationals());
-print #lines;
-print lines;
+For example, you could use:
+  P<x,y,z,w> := PolynomialRing(Rationals(),4);
+  lines := get_lines_over_field(x^3+y^3+z^3+w^3,Rationals());
+  print #lines;
+  print lines;
 */
 
 make_line_from_point := function(k,point, line_type)
