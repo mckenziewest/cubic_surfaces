@@ -1,0 +1,136 @@
+
+getSpltFld := function(S,k)
+	_, sfld := PointsOverSplittingField(S);
+		if Degree(sfld) ge 2 then
+		L := SplittingField(AbsolutePolynomial(sfld));
+		OL := Integers(L);
+		int := OL.2;
+		L := SplittingField(MinimalPolynomial(int));
+	else
+		L := k;
+	end if;
+	return L;
+end function;
+
+/* [x=az+bw, y=cz+dw] */
+type1_lines := function(q,k)
+	base<a,b,c,d> := PolynomialRing(k, 4);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [a*s+b*t,c*s+d*t,s,t]);
+	A4<a,b,c,d> := AffineSpace(k,4);
+	S := Scheme(A4, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [x - pt[1]*z - pt[2]*w, y - pt[3]*z - pt[4]*w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+/* [x=ay+bw,z=cw] */
+type2_lines := function(q,k)
+	base<a,b,c> := PolynomialRing(k, 3);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [a*s+b*t,s,c*t,t]);
+	A3<a,b,c> := AffineSpace(k,3);
+	S := Scheme(A3, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [x - pt[1]*y - pt[2]*w, z - pt[3]*w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+/* [x=ay+bz, w=0]*/
+type3_lines := function(q,k)
+	base<a,b> := PolynomialRing(k, 2);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [a*s+b*t,s,t,0]);
+	A2<a,b> := AffineSpace(k,2);
+	S := Scheme(A2, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [x - pt[1]*y - pt[2]*z, w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+/* [y=aw,z=bw]*/
+type4_lines := function(q,k)
+	base<a,b> := PolynomialRing(k, 2);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [s,a*t,b*t,t]);
+	A2<a,b> := AffineSpace(k,2);
+	S := Scheme(A2, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [y - pt[1]*w, z - pt[2]*w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+/* [y=az,w=0]*/
+type5_lines := function(q,k)
+	base<a> := PolynomialRing(k,1);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [s,a*t,t,0]);
+	A1<a> := AffineSpace(k,1);
+	S := Scheme(A1, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [y - pt[1]*z, w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+/* [z=0,w=0]*/
+type6_lines := function(q,k)
+	base<a> := PolynomialRing(k);
+	paramSpace<s,t> := PolynomialRing(base,2);
+	qnew := Evaluate(q, [s,t,0,0]);
+	A1<a> := AffineSpace(k,1);
+	S := Scheme(A1, Coefficients(qnew));
+	_, sfld := PointsOverSplittingField(S);
+	L := getSpltFld(S,k);
+	pts := Points(S,L);
+	P3<x,y,z,w> := ProjectiveSpace(L,3);
+	Lines := {@ Scheme(P3, [z, w]) : pt in pts @};
+ 	return Lines, L;
+end function;
+
+line_types := function(cubic)
+	P3 := ProjectiveSpace(Parent(cubic));
+	k := CoefficientRing(Parent(cubic));
+	if IsSingular(Scheme(P3,cubic)) then
+		return [];
+	end if;
+	type_1 := #type1_lines(cubic,k);
+	if type_1 lt 27 then
+		type_2 := #type2_lines(cubic,k);
+	end if;
+	if type_1 + type_2 lt 27 then
+		type_3 := #type3_lines(cubic,k);
+	end if;
+	if type_1 + type_2 + type_3 lt 27 then
+		type_4 := #type4_lines(cubic,k);
+	end if;
+	if type_1 + type_2 + type_3 + type_4 lt 27 then
+		type_5 := #type5_lines(cubic,k);
+	end if;
+	if type_1 + type_2 + type_3 + type_4 + type_5 lt 27 then
+		type_6 := 1;
+	end if;
+	return [type_1,type_2,type_3,type_4,type_5,type_6];
+end function;
+
+
+
+P3<x,y,z,w> := ProjectiveSpace(Rationals(),3);
+cubic := x^2*z+y^2*w+z^3+w^3;
+line_types(cubic);
+
+quit;

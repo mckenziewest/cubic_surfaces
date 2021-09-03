@@ -1,0 +1,6 @@
+R1<k1,k2,k3,k4,k5,k6,k7,k8,k9,k10,k11,k12,k13,k14,k15,k16> := PolynomialRing(Rationals(),16);
+F1 := FieldOfFractions(R1);
+Aff<c,d> := AffineSpace(F1,2);
+coeffs := [c^2*k5+d^2*k9+k14+c*d*k15,k1+c^3*k2+c^2*d*k3+c^2*k4+c*d^2*k6+c*k8+d^2*k10+d*k13+d^3*k16];
+gb := GroebnerBasis(Scheme(Aff,coeffs));
+

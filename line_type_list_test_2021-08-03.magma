@@ -1,0 +1,17 @@
+load "line_type_list.magma";
+load "existing_parts.magma";
+P3<x,y,z,w> := ProjectiveSpace(Rationals(),3);
+
+for k in CartesianPower([-1..2],10) do
+  cubic := k[1]*x^2*z+k[2]*y^2*z+k[3]*y^2*w+k[4]*y^2*w+
+  k[5]*x*z^2+k[6]*x*w^2+k[7]*y*z^2+k[8]*y*w^2+k[9]*z^3+k[10]*w^3;
+  l := get_line_types(cubic);
+  if l[1] cmpne false then
+    if not l in S then
+      Include(~S,l);
+      print cubic;
+      print l;
+    end if;
+  end if;
+end for;
+print S;

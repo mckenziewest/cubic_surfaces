@@ -1,0 +1,20 @@
+load "line_type_list.magma";
+have_ex := false;
+P3<x,y,z,w> := ProjectiveSpace(Rationals(),3);
+S := {};
+for a in [-1..10] do
+for b in [-1..10] do
+for c in [-1..10] do
+  cubic := (a+1)*x^2*z+b*y^2*w+c*z^3+(a-b)*w^3+(c-b)*x^3+a*b*x*y*z;
+  l := get_line_types(cubic);
+  if l[1] cmpne false then
+    if not l in S then
+      Include(~S,l);
+      print cubic;
+      print l;
+    end if;
+  end if;
+end for;
+end for;
+end for;
+print S;

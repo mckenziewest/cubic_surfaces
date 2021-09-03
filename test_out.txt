@@ -1,0 +1,32 @@
+Magma V2.26-5     Tue Aug  3 2021 15:23:37 on taz2     [Seed = 2482728999]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-08-03.magma"
+Loading "line_type_list.magma"
+Loading "existing_parts.magma"
+{
+    [ 16, 7, 2, 1, 0, 1 ],
+    [ 26, 0, 1, 0, 0, 0 ],
+    [ 16, 6, 2, 2, 0, 1 ],
+    [ 16, 8, 0, 2, 0, 1 ],
+    [ 16, 10, 0, 0, 0, 1 ],
+    [ 16, 9, 0, 1, 0, 1 ],
+    [ 24, 0, 0, 3, 0, 0 ],
+    [ 27, 0, 0, 0, 0, 0 ],
+    [ 24, 0, 3, 0, 0, 0 ],
+    [ 16, 8, 2, 0, 0, 1 ],
+    [ 24, 3, 0, 0, 0, 0 ]
+}
+
+Total time: 4523.220 seconds, Total memory usage: 32.09MB

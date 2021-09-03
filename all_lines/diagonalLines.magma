@@ -1,0 +1,78 @@
+load "dP2H1.magma";
+
+findH1Diagonal := function(A,B,C)
+	_<T> := PolynomialRing(Rationals());
+	Ldelta, deltas := SplittingField(T^4+1);
+	La, as := SplittingField(T^4-A);
+	Lb, bs := SplittingField(T^4-B);
+	Lc, cs := SplittingField(T^4-C);
+	L := Compositum(Ldelta,Compositum(La,Compositum(Lb,Lc)));
+	//AutomorphismGroup(L);
+	a := L!as[1];
+	b := L!bs[1];
+	c := L!cs[1];
+    I := Sqrt(L!(-1));
+	P3L<x,y,z,w> := ProjectiveSpace(L, [1,1,1,2]);
+	lines1 := [Scheme(P3L, [deltas[i]*a*x+b*y,w-(-1)^j*c^2*z^2]) : i in [1..4], j in [0,1]];
+	lines2 := [Scheme(P3L, [deltas[i]*b*y+c*z,w-(-1)^j*a^2*x^2]) : i in [1..4], j in [0,1]];
+	lines3 := [Scheme(P3L, [deltas[i]*c*z+a*x,w-(-1)^j*b^2*y^2]) : i in [1..4], j in [0,1]];
+	lines4 := SetToSequence({Scheme(P3L, [alpha[1]*a*x + beta[1]*b*y+gamma[1]*c*z, w -( Sqrt(L!2)*(alpha[1]*beta[1]*a*b*x*y+beta[1]*gamma[1]*b*c*y*z+alpha[1]*gamma[1]*a*c*x*z))]) : alpha, beta, gamma in Roots(T^4-1, L)});
+    abg := [[getCo(DefiningEquations(lines4[i])[1],x)/a,getCo(DefiningEquations(lines4[i])[1],y)/b,
+        getCo(DefiningEquations(lines4[i])[1],z)/c]: i in [1..32]];
+	lines := lines1 cat lines2 cat lines3 cat lines4;
+    sigma1 := [Index(lines, Scheme(P3L, [(deltas[i])^(-1)*a*x+b*y,w-(-1)^j*c^2*z^2])) : i in [1..4], j in [0,1]];
+    sigma2 := [Index(lines, Scheme(P3L, [(deltas[i])^(-1)*b*y+c*z,w-(-1)^j*a^2*x^2])) : i in [1..4], j in [0,1]];
+    sigma3 := [Index(lines, Scheme(P3L, [(deltas[i])^(-1)*c*z+a*x,w-(-1)^j*b^2*y^2])) : i in [1..4], j in [0,1]];
+    sigma4 := [Index(lines, Scheme(P3L, [abg[i,1]^(-1)*a*x + abg[i,2]^(-1)*b*y+abg[i,3]^(-1)*c*z, w -( Sqrt(L!2)*(abg[i,1]^(-1)*abg[i,2]^(-1)*a*b*x*y+abg[i,2]^(-1)*abg[i,3]^(-1)*b*c*y*z+abg[i,1]^(-1)*abg[i,3]^(-1)*a*c*x*z))])) : i in [1..32]];
+    sigma := sigma1 cat sigma2 cat sigma3 cat sigma4;
+    tau1 := [Index(lines, Scheme(P3L, [(deltas[i])^(3)*a*x+b*y,w-(-1)^j*c^2*z^2])) : i in [1..4], j in [0,1]];
+    tau2 := [Index(lines, Scheme(P3L, [(deltas[i])^(3)*b*y+c*z,w-(-1)^j*a^2*x^2])) : i in [1..4], j in [0,1]];
+    tau3 := [Index(lines, Scheme(P3L, [(deltas[i])^(3)*c*z+a*x,w-(-1)^j*b^2*y^2])) : i in [1..4], j in [0,1]];
+    tau4 := [Index(lines, Scheme(P3L, [abg[i,1]^(-1)*I*a*x + abg[i,2]^(-1)*I*b*y+abg[i,3]^(-1)*I*c*z, w -( Sqrt(L!2)*(abg[i,1]^(-1)*I^2*abg[i,2]^(-1)*a*b*x*y+abg[i,2]^(-1)*abg[i,3]^(-1)*I^2*b*c*y*z+abg[i,1]^(-1)*abg[i,3]^(-1)*I^2*a*c*x*z))])) : i in [1..32]];
+    tau := tau1 cat tau2 cat tau3 cat tau4;
+    ia1 := [Index(lines, Scheme(P3L, [(deltas[i])*I*a*x+b*y,w-(-1)^j*c^2*z^2])) : i in [1..4], j in [0,1]];
+    ia2 := [Index(lines, Scheme(P3L, [(deltas[i])*b*y+c*z,w-(-1)^(j+1)*a^2*x^2])) : i in [1..4], j in [0,1]];
+    ia3 := [Index(lines, Scheme(P3L, [(deltas[i])*-I*c*z+a*x,w-(-1)^j*b^2*y^2])) : i in [1..4], j in [0,1]];
+    ia4 := [Index(lines, Scheme(P3L, [abg[i,1]*I*a*x + abg[i,2]*b*y+abg[i,3]*c*z, w -( Sqrt(L!2)*(abg[i,1]*I*abg[i,2]*a*b*x*y+abg[i,2]*abg[i,3]*b*c*y*z+abg[i,1]*abg[i,3]*I*a*c*x*z))])) : i in [1..32]];
+    ia := ia1 cat ia2 cat ia3 cat ia4;
+    ib1 := [Index(lines, Scheme(P3L, [(deltas[i])*-I*a*x+b*y,w-(-1)^j*c^2*z^2])) : i in [1..4], j in [0,1]];
+    ib2 := [Index(lines, Scheme(P3L, [(deltas[i])*I*b*y+c*z,w-(-1)^(j)*a^2*x^2])) : i in [1..4], j in [0,1]];
+    ib3 := [Index(lines, Scheme(P3L, [(deltas[i])*c*z+a*x,w-(-1)^(j+1)*b^2*y^2])) : i in [1..4], j in [0,1]];
+    ib4 := [Index(lines, Scheme(P3L, [abg[i,1]*a*x + abg[i,2]*I*b*y+abg[i,3]*c*z, w -( Sqrt(L!2)*(abg[i,1]*I*abg[i,2]*a*b*x*y+abg[i,2]*abg[i,3]*I*b*c*y*z+abg[i,1]*abg[i,3]*a*c*x*z))])) : i in [1..32]];
+    ib := ib1 cat ib2 cat ib3 cat ib4;
+    ic1 := [Index(lines, Scheme(P3L, [(deltas[i])*a*x+b*y,w-(-1)^(j+1)*c^2*z^2])) : i in [1..4], j in [0,1]];
+    ic2 := [Index(lines, Scheme(P3L, [(deltas[i])*-I*b*y+c*z,w-(-1)^(j)*a^2*x^2])) : i in [1..4], j in [0,1]];
+    ic3 := [Index(lines, Scheme(P3L, [(deltas[i])*I*c*z+a*x,w-(-1)^(j)*b^2*y^2])) : i in [1..4], j in [0,1]];
+    ic4 := [Index(lines, Scheme(P3L, [abg[i,1]*a*x + abg[i,2]*b*y+abg[i,3]*I*c*z, w -( Sqrt(L!2)*(abg[i,1]*abg[i,2]*a*b*x*y+abg[i,2]*abg[i,3]*I*b*c*y*z+abg[i,1]*abg[i,3]*I*a*c*x*z))])) : i in [1..32]];
+    ic := ic1 cat ic2 cat ic3 cat ic4;
+    GalAction := PermutationGroup< 56 | [sigma, tau, ia, ib, ic] >;
+    numlines := #lines;
+    Int := -1*IdentityMatrix(Integers(),numlines);
+	/* Otherwise the intersection number of a pair of lines is the 
+	degree of their intersection, 0, 1 or 2. */
+	for i,j in [1..numlines] do
+		if i ne j then
+			intersect := lines[i] meet lines[j];
+			if Dimension(intersect) eq 0 then
+				Int[i,j] := Degree(intersect);
+			end if;
+		end if;
+	end for;
+	/* Build the module given by GalAction acting on Z^numlines */
+	LambdaMod := PermutationModule(GalAction, Integers());
+	Lambda := VectorSpace(LambdaMod); 
+	/* Equivalence in the Picard group of a del Pezzo surface 
+	is the same as linear equivalence.  Hence Pic is the quotient
+	of Z^56 by the kernel of the intersection matrix. */
+	Pic, class := quo< Lambda | Kernel(Int) >;
+	ClassMatrix := Matrix([ class(Lambda.i) : i in [1..numlines]]);
+	ClassSection := Solution(ClassMatrix, 
+		IdentityMatrix(Integers(), Ncols(ClassMatrix)));
+	/* We finally build the Picard group with action from the 
+	Galois group */
+	PicMod := GModule(GalAction, [ ClassSection * M *
+		ClassMatrix :  M in ActionGenerators(LambdaMod) ] );
+	CM := CohomologyModule(GalAction, PicMod);
+	H1 := CohomologyGroup(CM, 1);
+    return lines, L, H1, GalAction;
+end function;

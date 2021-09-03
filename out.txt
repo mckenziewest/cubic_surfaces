@@ -1,0 +1,276 @@
+Magma V2.24-9     Tue Jul 27 2021 15:04:45 on MATH2681558 [Seed = 1547525033]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-07-27.magma"
+Loading "line_type_list.magma"
+[ 16, 6, 2, 2, 0, 1 ]
+[ 26, 0, 0, 0, 1, 0 ]
+
+[Interrupted]
+
+Total time: 46.920 seconds, Total memory usage: 32.09MB
+Magma V2.24-9     Tue Jul 27 2021 15:05:37 on MATH2681558 [Seed = 2697045657]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-07-27.magma"
+Loading "line_type_list.magma"
+[ 16, 6, 2, 2, 0, 1 ]
+[ 26, 0, 0, 0, 1, 0 ]
+-10 -9 -9
+-10 -8 -8
+-10 -7 -7
+-10 -6 -6
+-10 -5 -5
+-10 -4 -4
+-10 -3 -3
+-10 -2 -2
+-10 -1 -1
+-10 1 1
+-10 2 2
+-10 3 3
+-10 4 4
+-10 5 5
+-10 6 6
+-10 7 7
+-10 8 8
+-10 9 9
+-10 10 10
+-9 -10 -10
+-9 -8 -8
+-9 -7 -7
+-9 -6 -6
+-9 -5 -5
+-9 -4 -4
+-9 -3 -3
+-9 -2 -2
+-9 -1 -1
+-9 1 1
+-9 2 2
+-9 3 3
+-9 4 4
+-9 5 5
+-9 6 6
+-9 7 7
+-9 8 8
+-9 9 9
+-9 10 10
+-8 -10 -10
+-8 -9 -9
+-8 -7 -7
+-8 -6 -6
+-8 -5 -5
+-8 -4 -4
+-8 -3 -3
+-8 -2 -2
+-8 -1 -1
+-8 1 1
+-8 2 2
+-8 3 3
+-8 4 4
+-8 5 5
+-8 6 6
+-8 7 7
+-8 8 8
+-8 9 9
+-8 10 10
+-7 -10 -10
+-7 -9 -9
+-7 -8 -8
+-7 -6 -6
+-7 -5 -5
+-7 -4 -4
+-7 -3 -3
+-7 -2 -2
+-7 -1 -1
+-7 1 1
+-7 2 2
+-7 3 3
+-7 4 4
+-7 5 5
+-7 6 6
+-7 7 7
+-7 8 8
+-7 9 9
+-7 10 10
+-6 -10 -10
+-6 -9 -9
+-6 -8 -8
+-6 -7 -7
+-6 -5 -5
+-6 -4 -4
+-6 -3 -3
+-6 -2 -2
+-6 -1 -1
+-6 1 1
+-6 2 2
+-6 3 3
+-6 4 4
+-6 5 5
+-6 6 6
+-6 7 7
+-6 8 8
+-6 9 9
+-6 10 10
+-5 -10 -10
+-5 -9 -9
+-5 -8 -8
+-5 -7 -7
+-5 -6 -6
+-5 -4 -4
+-5 -3 -3
+-5 -2 -2
+-5 -1 -1
+-5 1 1
+-5 2 2
+-5 3 3
+-5 4 4
+-5 5 5
+-5 6 6
+-5 7 7
+-5 8 8
+-5 9 9
+-5 10 10
+-4 -10 -10
+-4 -9 -9
+-4 -8 -8
+-4 -7 -7
+-4 -6 -6
+-4 -5 -5
+-4 -3 -3
+-4 -2 -2
+-4 -1 -1
+-4 1 1
+-4 2 2
+-4 3 3
+-4 4 4
+-4 5 5
+-4 6 6
+-4 7 7
+-4 8 8
+-4 9 9
+-4 10 10
+-3 -10 -10
+-3 -9 -9
+-3 -8 -8
+-3 -7 -7
+-3 -6 -6
+-3 -5 -5
+-3 -4 -4
+-3 -2 -2
+-3 -1 -1
+-3 1 1
+-3 2 2
+-3 3 3
+-3 4 4
+
+[Interrupted]
+
+Total time: 32.179 seconds, Total memory usage: 32.09MB
+Magma V2.24-9     Tue Jul 27 2021 15:06:39 on MATH2681558 [Seed = 2515833841]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-07-27.magma"
+Loading "line_type_list.magma"
+[ 16, 6, 2, 2, 0, 1 ]
+[ 26, 0, 0, 0, 1, 0 ]
+-10 -9 -9
+
+[Interrupted]
+
+Total time: 73.590 seconds, Total memory usage: 32.09MB
+Magma V2.24-9     Tue Jul 27 2021 15:11:17 on MATH2681558 [Seed = 1863214624]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-07-27.magma"
+Loading "line_type_list.magma"
+[ 16, 6, 2, 2, 0, 1 ]
+[ 26, 0, 0, 0, 1, 0 ]
+-x^3 - 9*x^2*z + 90*x*y*z - 10*z^3 - 9*y^2*w - w^3
+[ 27, 0, 0, 0, 0, 0 ]
+-9*x^2*z + 90*x*y*z - 9*z^3 - 9*y^2*w - w^3
+[ 16, 8, 0, 2, 0, 1 ]
+x^2*z - 10*z^3 - 10*y^2*w + 10*w^3
+[ 16, 6, 2, 2, 0, 1 ]
+x^3 + x^2*z - 9*z^3 - 10*y^2*w + 10*w^3
+[ 24, 0, 3, 0, 0, 0 ]
+
+[Interrupted]
+
+Total time: 54.640 seconds, Total memory usage: 32.09MB
+Magma V2.24-9     Tue Jul 27 2021 15:12:15 on MATH2681558 [Seed = 1143295473]
+
++-------------------------------------------------------------------+
+|       This copy of Magma has been made available through a        |
+|                   generous initiative of the                      |
+|                                                                   |
+|                         Simons Foundation                         |
+|                                                                   |
+| covering U.S. Colleges, Universities, Nonprofit Research entities,|
+|               and their students, faculty, and staff              |
++-------------------------------------------------------------------+
+
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "line_type_list_test_2021-07-27.magma"
+Loading "line_type_list.magma"
+-2*x^3 - x*y*z - z^3 + y^2*w - 2*w^3
+[ 27, 0, 0, 0, 0, 0 ]
+x^2*z - z^3 - y^2*w + w^3
+[ 16, 6, 2, 2, 0, 1 ]
+2*x^3 + x^2*z + z^3 - y^2*w + w^3
+[ 24, 0, 3, 0, 0, 0 ]
+2*x^2*z - x*y*z - z^3 - y^2*w + 2*w^3
+[ 16, 8, 0, 2, 0, 1 ]
+{
+    [ 27, 0, 0, 0, 0, 0 ],
+    [ 16, 8, 0, 2, 0, 1 ],
+    [ 16, 6, 2, 2, 0, 1 ],
+    [ 24, 0, 3, 0, 0, 0 ]
+}
+[ 16, 8, 0, 2, 0, 1 ]
+
+Total time: 12.189 seconds, Total memory usage: 32.09MB
