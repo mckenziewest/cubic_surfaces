@@ -1,4 +1,4 @@
-
+/* Very clunky work in progress */
 getSpltFld := function(S,k)
 	_, sfld := PointsOverSplittingField(S);
 		if Degree(sfld) ge 2 then

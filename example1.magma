@@ -1,2 +1,0 @@
-load "diagonal_cubic_h1.magma";
-Diagonal_Cubic_Computation(1,1,1,1);
